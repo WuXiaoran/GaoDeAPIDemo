@@ -6,7 +6,7 @@ import android.widget.Button;
 import butterknife.BindView;
 
 /**
- * Created by Administrator on 2017/5/10.
+ * Created by ran on 2017/5/10.
  */
 
 public class MainActivity extends AppCompatActivity{
