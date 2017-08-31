@@ -1,4 +1,4 @@
-package com.wxr.android.base;
+package com.wxr.android.base.activity;
 
 
 import android.support.annotation.NonNull;

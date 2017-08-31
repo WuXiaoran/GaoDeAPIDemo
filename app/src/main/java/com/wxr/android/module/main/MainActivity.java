@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.wxr.android.R;
-import com.wxr.android.base.BaseActivity;
+import com.wxr.android.base.activity.BaseActivity;
+import com.wxr.android.module.map.GaoDeMapActivity;
+import com.wxr.android.util.IntentUtil;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -26,7 +29,7 @@ public class MainActivity extends BaseActivity{
 
     @Override
     protected int getLayoutId() {
-        return 0;
+        return R.layout.activity_main;
     }
 
     @Override
@@ -44,10 +47,18 @@ public class MainActivity extends BaseActivity{
 
     }
 
+    @Override
+    protected void initOther(Bundle savedInstanceState) {
+        ButterKnife.bind(this);
+    }
+
+
+
     @OnClick({R.id.btn_map})
     public void gotoActivity(Button btn){
         switch (btn.getId()){
             case R.id.btn_map:
+                IntentUtil.startActivity(this, GaoDeMapActivity.class);
                 break;
         }
     }

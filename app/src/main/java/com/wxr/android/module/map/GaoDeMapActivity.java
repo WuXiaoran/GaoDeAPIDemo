@@ -1,84 +1,82 @@
 package com.wxr.android.module.map;
 
-import android.graphics.BitmapFactory;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.MapView;
 import com.wxr.android.R;
-import com.wxr.android.base.GaoDeBaseActivity;
+import com.wxr.android.base.activity.BaseActivity;
 
-import java.util.Date;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by ran on 2017/8/26.
  */
 
-public class GaoDeMapActivity extends GaoDeBaseActivity implements AMapLocationListener {
+public class GaoDeMapActivity extends BaseActivity implements GaoDeMapContract.View {
 
-    private AMap aMap;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
+    private GaoDeMapContract.Presenter presenter;
+    public AMap aMap;
+
+    @BindView(R.id.map)
+    MapView map;
 
 
     @Override
-    protected void store() {
+    protected void initOther(Bundle savedInstanceState) {
+        ButterKnife.bind(this);
+        //必需配置
+        map.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_map;
+    }
+
+    @Override
+    protected void initData() {
+        new GaoDeMapPresenter(this);
+        if (aMap == null)
+            aMap = map.getMap();
         initMap();
     }
 
-    private void initMap(){
-        MyLocationStyle myLocationStyle = new MyLocationStyle();
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
-        myLocationStyle.interval(2000);
-        aMap.setMyLocationStyle(myLocationStyle);
-        aMap.setMyLocationEnabled(true);
-        aMap.showIndoorMap(true);
-        aMap.getUiSettings().setScaleControlsEnabled(true);
-
-        MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(new LatLng(113.2759952545166,23.117055306224895));
-        markerOption.title("广州").snippet("当前位置");
-        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),R.mipmap.ic_launcher)));
-        markerOption.draggable(true);//设置Marker可拖动
-        // 将Marker设置为贴地显示，可以双指下拉地图查看效果
-        markerOption.setFlat(true);//设置marker平贴地图效果
-
-        mlocationClient = new AMapLocationClient(this);
-        mLocationOption = new AMapLocationClientOption();
-        mlocationClient.setLocationListener(this);
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        mLocationOption.setInterval(2000);
-        mlocationClient.setLocationOption(mLocationOption);
-        mlocationClient.startLocation();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        map.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        map.onResume();
+    }
 
     @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null){
-            if (aMapLocation.getErrorCode() == 0){
-                aMapLocation.getLocationType();
-                aMapLocation.getAccuracy();
+    protected void onPause() {
+        super.onPause();
+        map.onPause();
+    }
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(aMapLocation.getTime());
-                df.format(date);
-            }else{
-                Log.e("AmapError","location Error, ErrCode:"
-                        + aMapLocation.getErrorCode() + ", errInfo:"
-                        + aMapLocation.getErrorInfo());
-            }
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        map.onSaveInstanceState(outState);
+    }
+
+    private void initMap(){
+        presenter.baseFunction(aMap);
+        presenter.locationChange(mlocationClient,mLocationOption);
+
+
     }
 
     @Override
@@ -94,5 +92,15 @@ public class GaoDeMapActivity extends GaoDeBaseActivity implements AMapLocationL
     @Override
     protected void initWidget() {
 
+    }
+
+    @Override
+    public void setPresenter(GaoDeMapContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public AppCompatActivity getActivity() {
+        return this;
     }
 }

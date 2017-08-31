@@ -1,4 +1,4 @@
-package com.wxr.android.base;
+package com.wxr.android.base.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,12 +22,14 @@ import com.wxr.android.util.IntentUtil;
 
 public abstract class BaseActivity extends BasePermissionActivity {
 
+    private MaterialDialog me;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initOther();
         initWindow();
         setContentView(getLayoutId());
+        initOther(savedInstanceState);
         getBundleData(getIntent().getExtras());
         initWidget();
         initData();
@@ -74,6 +76,9 @@ public abstract class BaseActivity extends BasePermissionActivity {
 
             @Override
             public void onGranted() {
+                if (me != null){
+                    me.dismiss();
+                }
                 onGrantedPermission();
             }
 
@@ -146,7 +151,7 @@ public abstract class BaseActivity extends BasePermissionActivity {
      * 显示获取权限提示框
      */
     private void showPermissionDialog() {
-        new MaterialDialog.Builder(this)
+        me = new MaterialDialog.Builder(this)
                 .title(getString(R.string.dialog_title_permission))
                 .content(getString(R.string.dialog_content_permission))
                 .positiveText(getString(R.string.btn_setting))
@@ -205,6 +210,6 @@ public abstract class BaseActivity extends BasePermissionActivity {
     /**
      * 初始化第三方
      */
-    protected abstract void initOther();
+    protected abstract void initOther(Bundle savedInstanceState);
 
 }
