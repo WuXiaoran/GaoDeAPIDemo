@@ -1,7 +1,6 @@
 package com.wxr.android.base.adapter;
 
 import android.content.Context;
-import android.view.ViewGroup;
 
 import com.wxr.android.base.adapter.viewHolder.BaseViewHolder;
 
@@ -15,18 +14,4 @@ public abstract class BaseBottomSheetAdpater<M,VH extends BaseViewHolder> extend
         super(context);
     }
 
-    @Override
-    public VH createCustomViewHolder(ViewGroup parent, int viewType) {
-        return null;
-    }
-
-    @Override
-    public void bindCustomViewHolder(VH holder, int position) {
-
-    }
-
-    @Override
-    public int getCustomViewType(int position) {
-        return 0;
-    }
 }

@@ -17,7 +17,7 @@ import java.io.File;
 /**
  * Intent工具类
  *
- * @author chang
+ * @author ran
  */
 public class IntentUtil {
 
